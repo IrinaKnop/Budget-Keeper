@@ -3,6 +3,7 @@ package org.knop.budgetKeeper.service;
 import org.knop.budgetKeeper.dto.LoginDto;
 import org.knop.budgetKeeper.dto.RegistrationDto;
 import org.knop.budgetKeeper.dto.RegistrationResultDto;
+import org.knop.budgetKeeper.dto.UserIdDto;
 import org.knop.budgetKeeper.models.User;
 
 /**
@@ -14,4 +15,5 @@ public interface UserService {
 
     RegistrationResultDto registration (RegistrationDto registrationDto);
 
+    User id (UserIdDto userIdDto);
 }

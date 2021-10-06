@@ -3,6 +3,7 @@ package org.knop.budgetKeeper.controller;
 import org.knop.budgetKeeper.dto.LoginDto;
 import org.knop.budgetKeeper.dto.RegistrationDto;
 import org.knop.budgetKeeper.dto.RegistrationResultDto;
+import org.knop.budgetKeeper.dto.UserIdDto;
 import org.knop.budgetKeeper.models.User;
 import org.knop.budgetKeeper.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,16 @@ public class UserController {
             return ResponseEntity.status(400).body(user);
         } else {
             return ResponseEntity.ok(user);
+        }
+    }
+
+    @PostMapping("/checkAuth")
+    public ResponseEntity<?> checkAuth(@RequestBody UserIdDto userId) {
+        User user = userService.id(userId);
+        if (user == null) {
+            return ResponseEntity.status(400).body(new RegistrationResultDto(null, "Wrong login or password"));
+        } else {
+            return ResponseEntity.ok(new RegistrationResultDto(user, null));
         }
     }
 }

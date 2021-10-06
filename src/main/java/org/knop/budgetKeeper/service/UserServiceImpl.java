@@ -5,6 +5,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.knop.budgetKeeper.dto.LoginDto;
 import org.knop.budgetKeeper.dto.RegistrationDto;
 import org.knop.budgetKeeper.dto.RegistrationResultDto;
+import org.knop.budgetKeeper.dto.UserIdDto;
 import org.knop.budgetKeeper.models.Account;
 import org.knop.budgetKeeper.models.User;
 import org.knop.budgetKeeper.repository.UserRepository;
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,10 +56,21 @@ public class UserServiceImpl implements UserService {
         return new RegistrationResultDto(user, "");
     }
 
+    @Override
+    public User id(UserIdDto userIdDto) {
+        Optional<User> userOptional = userRepository.findById(userIdDto.getUserId());
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+        else {
+            return null;
+        }
+    }
+
     private RegistrationResultDto validateNewUser(RegistrationDto registrationDto) {
         EmailValidator validator = EmailValidator.getInstance();
-        if ((registrationDto.getName().matches(".*\\d+.*"))
-         || (registrationDto.getLastName().matches(".*\\d+.*"))) {
+        if ((!registrationDto.getName().matches("(^[A-Z]{1}[a-z]{1}([-a-z]{0,1})?([A-Za-z]{0,1})?([a-z]{0,11})?([-]{0,1})?([A-Z]{0,1})?([a-z]{0,14})?$)|(^[А-Я]{1}[а-я]{1}([-а-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,11})?([-]{0,1})?([А-Я]{0,1})?([а-я]{0,14})?$)"))
+         || (!registrationDto.getLastName().matches("(^[A-Z]{1}[a-z]{1}([-a-z]{0,1})?([A-Za-z]{0,1})?([a-z]{0,11})?([-]{0,1})?([A-Z]{0,1})?([a-z]{0,14})?$)|(^[А-Я]{1}[а-я]{1}([-а-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,11})?([-]{0,1})?([А-Я]{0,1})?([а-я]{0,14})?$)"))) {
             return  new RegistrationResultDto(null,"Invalid name or last name");
         }
         if (!validator.isValid(registrationDto.getEmail())){
