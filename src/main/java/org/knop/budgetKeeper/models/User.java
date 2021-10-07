@@ -28,10 +28,11 @@ public class User {
     @Getter
     private Integer id;
 
-    @Column(name = "Account_Id")
+    @ManyToOne
+    @JoinColumn(name = "Account_Id")
     @Getter
     @Setter
-    private Integer accountId;
+    private Account account;
 
     @Column(name = "Login")
     @Getter

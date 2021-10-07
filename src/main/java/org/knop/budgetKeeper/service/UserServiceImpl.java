@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
             return result;
         }
         Account userAccount = accountService.createAccount(result.getUser().getLogin());
-        result.getUser().setAccountId(userAccount.getId());
+        result.getUser().setAccount(userAccount);
         User user = userRepository.save(result.getUser());
         if (user == null) {
             return new RegistrationResultDto(user, "Internal server error");
