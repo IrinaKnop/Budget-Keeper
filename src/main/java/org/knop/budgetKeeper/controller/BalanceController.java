@@ -1,13 +1,12 @@
 package org.knop.budgetKeeper.controller;
 
 import org.knop.budgetKeeper.dto.BalanceDto;
+import org.knop.budgetKeeper.dto.BalanceInitialDto;
 import org.knop.budgetKeeper.dto.DailyLimitDto;
 import org.knop.budgetKeeper.service.BalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
@@ -36,4 +35,16 @@ public class BalanceController {
             return ResponseEntity.ok(balanceService.getDailyLimit(userId));
         }
     }
+
+    @PostMapping("/initialBalance")
+    public ResponseEntity<?> firstInitialBalance(@RequestBody BalanceInitialDto balanceInitialDto) {
+        if (balanceInitialDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        else {
+            return ResponseEntity.ok(balanceService.createInitialBalance(balanceInitialDto));
+        }
+    }
+
+
 }
