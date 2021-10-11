@@ -7,6 +7,7 @@ import org.knop.budgetKeeper.models.Payment;
 import org.knop.budgetKeeper.models.Subcategory;
 import org.knop.budgetKeeper.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class PaymentServiceImpl implements PaymentService{
     @Autowired
     private PaymentRepository paymentRepository;

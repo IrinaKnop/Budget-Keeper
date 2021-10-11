@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface BalanceRepository extends JpaRepository<Balance, Integer> {
-    Optional<Balance> findByUserIdAndDateBetween(Integer userId, Date timeStart, Date timeEnd);
+    Optional<Balance> findByUserIdAndMonthBetween(Integer userId, Date timeStart, Date timeEnd);
 }
