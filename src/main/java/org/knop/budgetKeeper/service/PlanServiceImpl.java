@@ -6,11 +6,13 @@ import org.knop.budgetKeeper.models.Payment;
 import org.knop.budgetKeeper.models.Plan;
 import org.knop.budgetKeeper.repository.PlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class PlanServiceImpl implements PlanService{
 
     @Autowired

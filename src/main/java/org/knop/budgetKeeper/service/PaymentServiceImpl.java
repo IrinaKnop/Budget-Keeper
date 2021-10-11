@@ -4,11 +4,13 @@ import org.knop.budgetKeeper.dto.PaymentDto;
 import org.knop.budgetKeeper.models.Payment;
 import org.knop.budgetKeeper.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class PaymentServiceImpl implements PaymentService{
     @Autowired
     private PaymentRepository paymentRepository;

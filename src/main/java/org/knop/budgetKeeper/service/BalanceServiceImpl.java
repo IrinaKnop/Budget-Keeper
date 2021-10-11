@@ -31,7 +31,7 @@ public class BalanceServiceImpl implements BalanceService{
     public BalanceDto getCurrentBalance(Integer userId) {
         Date timeStart = Date.valueOf(LocalDate.now().withDayOfMonth(1));
         Date timeEnd = Date.valueOf(LocalDate.now());
-        Optional<Balance> balanceOptional = balanceRepository.findByUserIdAndDateBetween(userId, timeStart, timeEnd);
+        Optional<Balance> balanceOptional = balanceRepository.findByUserIdAndMonthBetween(userId, timeStart, timeEnd);
         if (balanceOptional.isPresent()) {
             return new BalanceDto(balanceOptional.get());
         }
