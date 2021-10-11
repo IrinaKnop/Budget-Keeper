@@ -1,6 +1,7 @@
 package org.knop.budgetKeeper.controller;
 
 import org.knop.budgetKeeper.dto.PaymentDto;
+import org.knop.budgetKeeper.dto.PaymentsShortStatsDto;
 import org.knop.budgetKeeper.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,16 @@ public class PaymentsController {
         }
         else {
             return ResponseEntity.ok(paymentService.getAllForUserWithLimit(userId, limit));
+        }
+    }
+
+    @GetMapping("/getShortPaymentsStats")
+    public ResponseEntity<List<PaymentsShortStatsDto>> getShortPaymentsStats(@RequestParam Integer userId) {
+        if (userId == null) {
+            return ResponseEntity.status(401).body(new ArrayList<>());
+        }
+        else {
+            return ResponseEntity.ok(paymentService.getShortPaymentsStats(userId));
         }
     }
 }

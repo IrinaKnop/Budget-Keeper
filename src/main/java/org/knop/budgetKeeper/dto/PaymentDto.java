@@ -2,7 +2,6 @@ package org.knop.budgetKeeper.dto;
 
 import lombok.Data;
 import org.knop.budgetKeeper.models.Payment;
-import org.knop.budgetKeeper.models.Plan;
 
 import java.math.BigDecimal;
 import java.sql.Date;

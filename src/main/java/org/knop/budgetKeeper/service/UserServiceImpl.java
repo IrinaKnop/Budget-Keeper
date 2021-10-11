@@ -1,6 +1,5 @@
 package org.knop.budgetKeeper.service;
 
-import org.apache.commons.validator.routines.DomainValidator;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.knop.budgetKeeper.dto.LoginDto;
 import org.knop.budgetKeeper.dto.RegistrationDto;
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class UserServiceImpl implements UserService {
