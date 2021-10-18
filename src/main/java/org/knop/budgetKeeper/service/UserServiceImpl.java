@@ -23,6 +23,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @Override
     public User login(LoginDto loginDto) {
         Optional<User> userOptional = userRepository.findByLogin(loginDto.getLogin());
@@ -50,6 +53,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return new RegistrationResultDto(user, "Internal server error");
         }
+        categoryService.createDefaultCategory(user);
         return new RegistrationResultDto(user, "");
     }
 

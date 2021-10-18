@@ -10,5 +10,4 @@ import java.math.BigDecimal;
 public class PaymentsShortStatsDto {
     private String category;
     private BigDecimal value;
-    private Double percentage;
 }

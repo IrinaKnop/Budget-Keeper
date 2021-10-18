@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class BalanceServiceImpl implements BalanceService{
             return new BalanceDto(balanceOptional.get());
         }
         else {
-            return new BalanceDto(BigDecimal.ZERO);
+            return new BalanceDto(new Balance());
         }
     }
 
@@ -45,11 +46,11 @@ public class BalanceServiceImpl implements BalanceService{
     public Balance createInitialBalance(BalanceInitialDto balanceInitialDto) {
         Date nowDate = Date.valueOf(LocalDate.now());
         User user = userService.id(new UserIdDto(balanceInitialDto.getUserId()));
-        BigDecimal balance = balanceInitialDto.getInitialBalance();
+        BigDecimal balance = balanceInitialDto.getInitialBalanceValue();
         if (balance.compareTo(BigDecimal.ZERO) < 0) {
            balance = BigDecimal.ZERO;
         }
-        Balance newBalance = new Balance(-1, user, balance, balance, nowDate);
+        Balance newBalance = new Balance(-1, user, balance, balance, nowDate, true);
         return balanceRepository.save(newBalance);
     }
 
@@ -57,8 +58,8 @@ public class BalanceServiceImpl implements BalanceService{
     public DailyLimitDto getDailyLimit(Integer userId) {
         LocalDate now = LocalDate.now();
         LocalDate nextMonth = LocalDate.now().plusMonths(1).withDayOfMonth(1);
-        Long numberOfDays = DAYS.between(now, nextMonth);
+        long numberOfDays = DAYS.between(now, nextMonth);
         BigDecimal currentBalance = this.getCurrentBalance(userId).getFinalBalance();
-        return new DailyLimitDto(currentBalance.divide(BigDecimal.valueOf(numberOfDays)));
+        return new DailyLimitDto(currentBalance.divide(BigDecimal.valueOf(numberOfDays), RoundingMode.CEILING));
     }
 }

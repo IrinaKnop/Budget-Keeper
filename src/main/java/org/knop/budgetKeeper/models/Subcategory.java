@@ -39,4 +39,9 @@ public class Subcategory {
     @Getter
     @Setter
     private Boolean uselessType;
+
+    @Column(name = "Income_label")
+    @Getter
+    @Setter
+    private Boolean incomeLabel;
 }

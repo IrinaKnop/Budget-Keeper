@@ -40,4 +40,9 @@ public class Balance {
     @Getter
     @Setter
     private Date month;
+
+    @Column(name = "Is_initialized")
+    @Getter
+    @Setter
+    private Boolean isInitialized;
 }

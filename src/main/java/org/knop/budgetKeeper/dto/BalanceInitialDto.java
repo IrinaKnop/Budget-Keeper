@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 @Data
 public class BalanceInitialDto {
     private Integer userId;
-    private BigDecimal initialBalance;
+    private BigDecimal initialBalanceValue;
 }

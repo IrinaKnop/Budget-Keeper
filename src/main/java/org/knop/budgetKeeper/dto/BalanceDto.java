@@ -11,7 +11,9 @@ import java.math.BigDecimal;
 public class BalanceDto {
     public BalanceDto(Balance balance) {
         this.finalBalance = balance.getFinalBalance();
+        this.isInitialized = balance.getIsInitialized();
     }
 
+    private Boolean isInitialized;
     private BigDecimal finalBalance;
 }

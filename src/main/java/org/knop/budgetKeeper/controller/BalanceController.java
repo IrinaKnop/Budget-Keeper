@@ -19,7 +19,7 @@ public class BalanceController {
     @GetMapping("/getCurrentBalance")
     public ResponseEntity<BalanceDto> getCurrentBalance(@RequestParam Integer userId) {
         if (userId == null) {
-            return ResponseEntity.status(401).body(new BalanceDto(BigDecimal.ZERO));
+            return ResponseEntity.status(401).body(new BalanceDto(false, BigDecimal.ZERO));
         }
         else {
             return ResponseEntity.ok(balanceService.getCurrentBalance(userId));

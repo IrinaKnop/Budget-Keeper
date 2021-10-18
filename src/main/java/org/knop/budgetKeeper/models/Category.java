@@ -22,6 +22,7 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "User_id")
     @Getter
+    @Setter
     private User user;
 
     @Column(name = "Name")
@@ -33,4 +34,9 @@ public class Category {
     @Getter
     @Setter
     private Boolean uselessType;
+
+    @Column(name = "Income_label")
+    @Getter
+    @Setter
+    private Boolean incomeLabel;
 }
