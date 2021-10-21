@@ -47,12 +47,13 @@ public class Plan {
 
     @Column(name = "Progress")
     @Getter
+    @Setter
     private Double progress;
 
-    @Column(name = "Accumulate_flag")
+    @Column(name = "Is_accumulate")
     @Getter
     @Setter
-    private Boolean accumulateFlag;
+    private Boolean isAccumulate;
 
     @Column(name = "Is_open")
     @Getter

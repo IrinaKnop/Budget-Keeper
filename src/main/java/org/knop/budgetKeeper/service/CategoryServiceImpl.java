@@ -4,17 +4,24 @@ import org.knop.budgetKeeper.dto.CategoriesDto;
 import org.knop.budgetKeeper.dto.CategoryDto;
 import org.knop.budgetKeeper.dto.SubcategoriesDto;
 import org.knop.budgetKeeper.models.Category;
+import org.knop.budgetKeeper.models.Payment;
 import org.knop.budgetKeeper.models.User;
 import org.knop.budgetKeeper.repository.CategoryRepository;
+import org.knop.budgetKeeper.repository.PaymentRepository;
 import org.knop.budgetKeeper.repository.SubcategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -92,5 +99,15 @@ public class CategoryServiceImpl implements CategoryService {
                 incomeList,
                 expensesList
         );
+    }
+
+    @Override
+    public List<CategoryDto> getAllCategories(Integer userId, Date dateStart, Date dateEnd) {
+        return paymentRepository.findAllByUserIdAndDateBetween(userId, dateStart, dateEnd)
+                .stream()
+                .map(it -> it.getCategory())
+                .distinct()
+                .map(it -> new CategoryDto(it))
+                .collect(Collectors.toList());
     }
 }

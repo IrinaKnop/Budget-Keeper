@@ -4,9 +4,7 @@ import org.knop.budgetKeeper.dto.PlanDto;
 import org.knop.budgetKeeper.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,16 @@ public class PlansController {
 
     @Autowired
     private PlanService planService;
+
+    @PostMapping("/addPlan")
+    public ResponseEntity<PlanDto> addPlan(@RequestBody PlanDto planDto) {
+        if(planDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        else {
+            return ResponseEntity.ok(planService.addPlan(planDto));
+        }
+    }
 
     @GetMapping("/getAllPlans")
     public ResponseEntity<List<PlanDto>> getAllPlans(@RequestParam Integer userId) {

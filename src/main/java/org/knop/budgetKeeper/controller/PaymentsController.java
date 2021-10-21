@@ -1,9 +1,6 @@
 package org.knop.budgetKeeper.controller;
 
-import org.knop.budgetKeeper.dto.CategoriesDto;
-import org.knop.budgetKeeper.dto.PaymentDto;
-import org.knop.budgetKeeper.dto.PaymentsByCategoryStatsDto;
-import org.knop.budgetKeeper.dto.PaymentsShortStatsDto;
+import org.knop.budgetKeeper.dto.*;
 import org.knop.budgetKeeper.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,31 +47,24 @@ public class PaymentsController {
         }
     }
 
-    @GetMapping("/getPaymentsStatsByPeriod")
-    public ResponseEntity<PaymentsByCategoryStatsDto> getPaymentsStatsByPeriod(@RequestParam Integer userId,
-                                                                               @RequestParam Date dateStart,
-                                                                               @RequestParam Date dateEnd) {
-        if (userId == null) {
-            return ResponseEntity.status(401)
-                    .body(new PaymentsByCategoryStatsDto(Collections.emptyList(), Collections.emptyList()));
-        }
-        else {
-            return ResponseEntity.ok(paymentService.getPaymentsStatsByPeriod(userId, dateStart, dateEnd));
-        }
-    }
-
-    @GetMapping("/getSubcategoryStatsByPeriod")
-    public ResponseEntity<List<PaymentsShortStatsDto>> getSubcategoryStatsByPeriod(@RequestParam Integer userId,
-                                                                                   @RequestParam Boolean incomeLabel,
-                                                                                   @RequestParam String categoryName,
-                                                                                   @RequestParam Date dateStart,
-                                                                                   @RequestParam Date dateEnd) {
-        if (userId == null) {
+    @PostMapping("/getPaymentsStatsByPeriod")
+    public ResponseEntity<List<PaymentsShortStatsDto>> getPaymentsStatsByPeriod(@RequestBody AnalyticStatsDto analyticStatsDto) {
+        if (analyticStatsDto.getUserId() == null) {
             return ResponseEntity.status(401)
                     .body(new ArrayList<>());
         }
         else {
-            return ResponseEntity.ok(paymentService.getStatsByCategory(userId, incomeLabel, categoryName, dateStart, dateEnd));
+            return ResponseEntity.ok(paymentService.getPaymentsStatsByPeriod(analyticStatsDto));
+        }
+    }
+
+    @PostMapping("/getSubcategoryStatsByPeriod")
+    public ResponseEntity<List<PaymentsShortStatsDto>> getSubcategoryStatsByPeriod(@RequestBody AnalyticStatsByCategoryDto analyticStatsByCategoryDto) {
+        if (analyticStatsByCategoryDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(new ArrayList<>());
+        }
+        else {
+            return ResponseEntity.ok(paymentService.getStatsByCategory(analyticStatsByCategoryDto));
         }
     }
 
@@ -85,6 +75,18 @@ public class PaymentsController {
         }
         else {
             return ResponseEntity.ok(paymentService.addPayment(paymentDto));
+        }
+    }
+
+    @GetMapping("/getGraphStats")
+    public ResponseEntity<List<PaymentsGraphDto>> getGraphStats(@RequestParam Integer userId,
+                                                                @RequestParam Date dateStart,
+                                                                @RequestParam Date dateEnd) {
+        if (userId == null) {
+            return ResponseEntity.status(401).body(new ArrayList<>());
+        }
+        else {
+            return ResponseEntity.ok(paymentService.getGraphStats(userId, dateStart, dateEnd));
         }
     }
 }
