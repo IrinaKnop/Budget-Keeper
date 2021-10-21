@@ -1,7 +1,6 @@
 package org.knop.budgetKeeper.service;
 
 import lombok.SneakyThrows;
-import org.hibernate.type.descriptor.java.LocalDateJavaDescriptor;
 import org.knop.budgetKeeper.dto.*;
 import org.knop.budgetKeeper.models.*;
 import org.knop.budgetKeeper.repository.*;
@@ -46,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .stream()
                 .sorted(Comparator.comparing(Payment::getDate, Comparator.nullsLast(Comparator.reverseOrder())))
                 .map(PaymentDto::new)
+                .sorted(Comparator.comparing(PaymentDto::getId).reversed())
                 .collect(Collectors.toList());
     }
 

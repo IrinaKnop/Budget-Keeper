@@ -71,6 +71,7 @@ public class PlanServiceImpl implements PlanService{
                 .stream()
                 .sorted(Comparator.comparing(Plan::getDateStart, Comparator.nullsLast(Comparator.reverseOrder())))
                 .map(PlanDto::new)
+                .sorted(Comparator.comparing(PlanDto::getId))
                 .collect(Collectors.toList());
     }
 }
