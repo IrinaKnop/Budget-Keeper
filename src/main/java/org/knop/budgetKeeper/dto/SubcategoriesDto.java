@@ -12,12 +12,16 @@ import org.knop.budgetKeeper.models.Subcategory;
 public class SubcategoriesDto {
     public SubcategoriesDto(Subcategory subcategory) {
         this.id = subcategory.getId();
+        this.userId = subcategory.getUser().getId();
+        this.categoryName = subcategory.getCategory().getName();
         this.name = subcategory.getName();
         this.uselessType = subcategory.getUselessType();
         this.incomeLabel = subcategory.getIncomeLabel();
     }
 
     private Integer id;
+    private Integer userId;
+    private String categoryName;
     private String name;
     private Boolean uselessType;
     private Boolean incomeLabel;

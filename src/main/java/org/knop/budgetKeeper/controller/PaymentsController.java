@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -69,7 +68,7 @@ public class PaymentsController {
     }
 
     @PostMapping("/addPayment")
-    public ResponseEntity<?> addPayment (@RequestBody PaymentDto paymentDto) {
+    public ResponseEntity<PaymentDto> addPayment (@RequestBody PaymentDto paymentDto) {
         if (paymentDto.getUserId() == null) {
             return ResponseEntity.status(401).body(null);
         }
@@ -78,7 +77,16 @@ public class PaymentsController {
         }
     }
 
-    @GetMapping("/getGraphStats")
+    @PostMapping("/deletePayment")
+    public ResponseEntity<Boolean> deletePayment (@RequestBody PaymentDto paymentDto) {
+        if (paymentDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        } else {
+            return ResponseEntity.ok(paymentService.deletePayment(paymentDto));
+        }
+    }
+
+        @GetMapping("/getGraphStats")
     public ResponseEntity<List<PaymentsGraphDto>> getGraphStats(@RequestParam Integer userId,
                                                                 @RequestParam Date dateStart,
                                                                 @RequestParam Date dateEnd) {

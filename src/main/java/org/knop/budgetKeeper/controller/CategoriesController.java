@@ -2,12 +2,11 @@ package org.knop.budgetKeeper.controller;
 
 import org.knop.budgetKeeper.dto.CategoriesDto;
 import org.knop.budgetKeeper.dto.CategoryDto;
+import org.knop.budgetKeeper.dto.SubcategoriesDto;
 import org.knop.budgetKeeper.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -40,6 +39,26 @@ public class CategoriesController {
         }
         else {
             return ResponseEntity.ok(categoryService.getAllCategories(userId, dateStart, dateEnd));
+        }
+    }
+
+    @PostMapping("/addCategory")
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
+        if (categoryDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        else {
+            return ResponseEntity.ok(categoryService.createNewCategory(categoryDto));
+        }
+    }
+
+    @PostMapping("/addSubcategory")
+    public ResponseEntity<SubcategoriesDto> addSubcategory(@RequestBody SubcategoriesDto subcategoriesDto) {
+        if (subcategoriesDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        else {
+            return ResponseEntity.ok(categoryService.createNewSubcategory(subcategoriesDto));
         }
     }
 

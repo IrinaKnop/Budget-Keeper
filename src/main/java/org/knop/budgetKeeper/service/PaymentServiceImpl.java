@@ -209,6 +209,19 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    @Override
+    public Boolean deletePayment(PaymentDto paymentDto) {
+        Optional<Payment> forDelete = paymentRepository
+                .findById(paymentDto.getId());
+        if(forDelete.isPresent()) {
+            Payment payment = forDelete.get();
+            paymentRepository.delete(payment);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void updateBalance(Integer userId, BigDecimal updateValue) {
         Date timeStart = Date.valueOf(LocalDate.now().withDayOfMonth(1));
         Date timeEnd = Date.valueOf(LocalDate.now());

@@ -19,11 +19,13 @@ public class Balance {
     @Column(name = "Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
+    @Setter
     private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "User_id")
     @Getter
+    @Setter
     private User user;
 
     @Column(name = "Initial_balance")

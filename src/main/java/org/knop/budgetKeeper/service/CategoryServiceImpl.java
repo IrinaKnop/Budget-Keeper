@@ -3,17 +3,17 @@ package org.knop.budgetKeeper.service;
 import org.knop.budgetKeeper.dto.CategoriesDto;
 import org.knop.budgetKeeper.dto.CategoryDto;
 import org.knop.budgetKeeper.dto.SubcategoriesDto;
-import org.knop.budgetKeeper.models.Category;
-import org.knop.budgetKeeper.models.Payment;
-import org.knop.budgetKeeper.models.User;
+import org.knop.budgetKeeper.models.*;
 import org.knop.budgetKeeper.repository.CategoryRepository;
 import org.knop.budgetKeeper.repository.PaymentRepository;
 import org.knop.budgetKeeper.repository.SubcategoryRepository;
+import org.knop.budgetKeeper.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +27,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private SubcategoryRepository subcategoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private final static List<Category> defaultCategories = List.of(
             new Category(-1, null, "Заработная плата", false, true),
@@ -49,14 +52,58 @@ public class CategoryServiceImpl implements CategoryService {
     );
 
     @Override
-    public Category createNewCategory(String name) {
-        return null;
+    public CategoryDto createNewCategory(CategoryDto categoryDto) {
+        Optional<User> user = userRepository.findById(categoryDto.getUserId());
+        if (user.isPresent()) {
+            Optional<Category> category = categoryRepository.findByNameAndUserIdAndIncomeLabel(
+                    categoryDto.getName(),
+                    categoryDto.getUserId(),
+                    categoryDto.getIncomeLabel()
+            );
+            if (category.isEmpty()) {
+                Category newCategory = new Category(-1,
+                        user.get(),
+                        categoryDto.getName(),
+                        categoryDto.getUselessType(),
+                        categoryDto.getIncomeLabel());
+                categoryRepository.save(newCategory);
+                return new CategoryDto(newCategory);
+            }
+            else return null;
+        } else return null;
+    }
+
+    @Override
+    public SubcategoriesDto createNewSubcategory(SubcategoriesDto subcategoriesDto) {
+        Optional<User> user = userRepository.findById(subcategoriesDto.getUserId());
+        Optional<Category> category = categoryRepository.findByNameAndUserIdAndIncomeLabel(
+                subcategoriesDto.getCategoryName(),
+                user.get().getId(),
+                subcategoriesDto.getIncomeLabel());
+        if (user.isPresent() && category.isPresent()) {
+            Optional<Subcategory> subcategory = subcategoryRepository.findByNameAndCategoryId(
+                    subcategoriesDto.getName(),
+                    category.get().getId()
+            );
+            if (subcategory.isEmpty()) {
+                Subcategory newSubcategory = new Subcategory(-1,
+                        category.get(),
+                        user.get(),
+                        subcategoriesDto.getName(),
+                        subcategoriesDto.getIncomeLabel(),
+                        subcategoriesDto.getIncomeLabel());
+                subcategoryRepository.save(newSubcategory);
+                return new SubcategoriesDto(newSubcategory);
+            }
+            else return null;
+        }
+        else return null;
     }
 
     @Override
     public void createDefaultCategory(User user) {
         defaultCategories.forEach(
-                it-> {
+                it -> {
                     it.setUser(user);
                     categoryRepository.save(it);
                 }
@@ -69,7 +116,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .stream()
                 .map(CategoryDto::new)
                 .map(
-                        it-> {
+                        it -> {
                             it.setListSubcategories(
                                     subcategoryRepository
                                             .findAllByUserIdAndCategoryId(userId, it.getId())
@@ -84,7 +131,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .stream()
                 .map(CategoryDto::new)
                 .map(
-                        it-> {
+                        it -> {
                             it.setListSubcategories(
                                     subcategoryRepository
                                             .findAllByUserIdAndCategoryId(userId, it.getId())
