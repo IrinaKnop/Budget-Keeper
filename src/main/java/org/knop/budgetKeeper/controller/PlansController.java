@@ -25,6 +25,26 @@ public class PlansController {
         }
     }
 
+    @PostMapping("/editPlan")
+    public ResponseEntity<PlanDto> editPlan(@RequestBody PlanDto planDto) {
+        if (planDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        else {
+            return ResponseEntity.ok(planService.editPlan(planDto));
+        }
+    }
+
+    @PostMapping("/deletePlan")
+    public ResponseEntity<Boolean> deletePlan(@RequestBody PlanDto planDto) {
+        if (planDto.getUserId() == null) {
+            return ResponseEntity.status(401).body(null);
+        }
+        else {
+            return ResponseEntity.ok(planService.deletePlan(planDto));
+        }
+    }
+
     @GetMapping("/getAllPlans")
     public ResponseEntity<List<PlanDto>> getAllPlans(@RequestParam Integer userId) {
         if (userId == null) {

@@ -72,20 +72,20 @@ public class UserServiceImpl implements UserService {
         EmailValidator validator = EmailValidator.getInstance();
         if ((!registrationDto.getName().matches("(^[A-Z]{1}[a-z]{1}([-a-z]{0,1})?([A-Za-z]{0,1})?([a-z]{0,11})?([-]{0,1})?([A-Z]{0,1})?([a-z]{0,14})?$)|(^[А-Я]{1}[а-я]{1}([-а-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,11})?([-]{0,1})?([А-Я]{0,1})?([а-я]{0,14})?$)"))
          || (!registrationDto.getLastName().matches("(^[A-Z]{1}[a-z]{1}([-a-z]{0,1})?([A-Za-z]{0,1})?([a-z]{0,11})?([-]{0,1})?([A-Z]{0,1})?([a-z]{0,14})?$)|(^[А-Я]{1}[а-я]{1}([-а-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,11})?([-]{0,1})?([А-Я]{0,1})?([а-я]{0,14})?$)"))) {
-            return  new RegistrationResultDto(null,"Invalid name or last name");
+            return  new RegistrationResultDto(null,"Неправильно введено имя или фамилия");
         }
         if (!validator.isValid(registrationDto.getEmail())){
-            return  new RegistrationResultDto(null,"Invalid email");
+            return  new RegistrationResultDto(null,"Неправильно введен e-mail");
         }
 
         Optional<User> userOptional = userRepository.findByLogin(registrationDto.getLogin());
         if (userOptional.isPresent()) {
-            return new RegistrationResultDto(null, "Login already in use");
+            return new RegistrationResultDto(null, "Такой логин уже зарегистрирован");
         }
 
         Optional<User> optionalUser = userRepository.findByEmail(registrationDto.getEmail());
         if (optionalUser.isPresent()) {
-            return new RegistrationResultDto(null, "E-mail already in use");
+            return new RegistrationResultDto(null, "Такой e-mail уже зарегистрирован");
         }
 
         return new RegistrationResultDto(new User(registrationDto),"");

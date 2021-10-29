@@ -22,7 +22,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginDto login) {
         User user = userService.login(login);
         if (user == null) {
-            return ResponseEntity.status(400).body(new RegistrationResultDto(null, "Wrong login or password"));
+            return ResponseEntity.status(400).body(new RegistrationResultDto(null, "Неверный логин или пароль"));
         } else {
             return ResponseEntity.ok(new RegistrationResultDto(user, null));
         }
@@ -42,7 +42,7 @@ public class UserController {
     public ResponseEntity<?> checkAuth(@RequestBody UserIdDto userId) {
         User user = userService.id(userId);
         if (user == null) {
-            return ResponseEntity.status(400).body(new RegistrationResultDto(null, "Wrong login or password"));
+            return ResponseEntity.status(400).body(new RegistrationResultDto(null, "Неверный логин или пароль"));
         } else {
             return ResponseEntity.ok(new RegistrationResultDto(user, null));
         }

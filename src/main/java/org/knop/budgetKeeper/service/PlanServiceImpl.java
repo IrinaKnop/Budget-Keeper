@@ -74,4 +74,37 @@ public class PlanServiceImpl implements PlanService{
                 .sorted(Comparator.comparing(PlanDto::getId))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public PlanDto editPlan(PlanDto planDto) {
+        Optional<User> user = userRepository.findById(planDto.getUserId());
+        if (user.isPresent()) {
+            Plan updatePlan = new Plan(planDto.getId(),
+                    user.get(),
+                    planDto.getName(),
+                    planDto.getValue(),
+                    planDto.getDateStart(),
+                    planDto.getDateEnding(),
+                    planDto.getProgress(),
+                    planDto.getIsAccumulate(),
+                    planDto.getIsOpen());
+            planRepository.save(updatePlan);
+            return new PlanDto(updatePlan);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Boolean deletePlan(PlanDto planDto) {
+        Optional<Plan> forDelete = planRepository.findById(planDto.getId());
+        if (forDelete.isPresent()) {
+            Plan plan = forDelete.get();
+            planRepository.delete(plan);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
