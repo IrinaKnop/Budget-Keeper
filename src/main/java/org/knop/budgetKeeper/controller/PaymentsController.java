@@ -67,6 +67,18 @@ public class PaymentsController {
         }
     }
 
+    @GetMapping("/getUselessPayments")
+    public ResponseEntity<List<UselessPaymentDto>> getUselessPayments(@RequestParam Integer userId,
+                                                                      @RequestParam Date dateStart,
+                                                                      @RequestParam Date dateEnd) {
+        if (userId == null) {
+            return ResponseEntity.status(401).body(new ArrayList<>());
+        }
+        else {
+            return ResponseEntity.ok(paymentService.getUselessPayments(userId, dateStart, dateEnd));
+        }
+    }
+
     @PostMapping("/addPayment")
     public ResponseEntity<PaymentDto> addPayment (@RequestBody PaymentDto paymentDto) {
         if (paymentDto.getUserId() == null) {

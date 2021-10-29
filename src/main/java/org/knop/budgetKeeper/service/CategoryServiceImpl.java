@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
                         category.get(),
                         user.get(),
                         subcategoriesDto.getName(),
-                        subcategoriesDto.getIncomeLabel(),
+                        subcategoriesDto.getUselessType(),
                         subcategoriesDto.getIncomeLabel());
                 subcategoryRepository.save(newSubcategory);
                 return new SubcategoriesDto(newSubcategory);
@@ -126,6 +127,7 @@ public class CategoryServiceImpl implements CategoryService {
                             return it;
                         }
                 )
+                .sorted(Comparator.comparing(CategoryDto::getName))
                 .collect(Collectors.toList());
         List<CategoryDto> expensesList = categoryRepository.findAllByUserIdAndIncomeLabel(userId, false)
                 .stream()
@@ -141,6 +143,7 @@ public class CategoryServiceImpl implements CategoryService {
                             return it;
                         }
                 )
+                .sorted(Comparator.comparing(CategoryDto::getName))
                 .collect(Collectors.toList());
         return new CategoriesDto(
                 incomeList,

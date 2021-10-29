@@ -14,5 +14,6 @@ public interface PaymentService {
     List<PaymentsShortStatsDto> getStatsByCategory(AnalyticStatsByCategoryDto analyticStatsByCategoryDto);
     PaymentDto addPayment(PaymentDto paymentDto);
     List<PaymentsGraphDto> getGraphStats(Integer userId, Date dateStart, Date dateEnd);
+    List<UselessPaymentDto> getUselessPayments(Integer userId, Date dateStart, Date dateEnd);
     Boolean deletePayment(PaymentDto paymentDto);
 }

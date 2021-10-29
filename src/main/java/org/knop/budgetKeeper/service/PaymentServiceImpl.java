@@ -45,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .stream()
                 .sorted(Comparator.comparing(Payment::getDate, Comparator.nullsLast(Comparator.reverseOrder())))
                 .map(PaymentDto::new)
-                .sorted(Comparator.comparing(PaymentDto::getId).reversed())
+                .sorted(Comparator.comparing(PaymentDto::getDate).thenComparing(PaymentDto::getId).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -127,7 +127,7 @@ public class PaymentServiceImpl implements PaymentService {
                         analyticStatsByCategoryDto.getCategoryName(),
                         analyticStatsByCategoryDto.getUserId(),
                         analyticStatsByCategoryDto.getIncomeLabel());
-        if (!category.isPresent()) {
+        if (category.isEmpty()) {
             return Collections.emptyList();
         }
         List<Subcategory> subcategory = subcategoryRepository
@@ -210,6 +210,73 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public List<UselessPaymentDto> getUselessPayments(Integer userId, Date dateStart, Date dateEnd) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            List<Payment> payments = paymentRepository.findAllByUserIdAndDateBetween(
+                    user.get().getId(), dateStart, dateEnd);
+            List<UselessPaymentDto> byCategory = payments
+                    .stream()
+                    .filter(it -> it.getCategory().getUselessType() && it.getSubcategory() == null)
+                    .map(it -> new UselessPaymentDto(
+                            it.getCategory().getName(),
+                            null,
+                            it.getValue()))
+                    .collect(Collectors.toList());
+            Map<UselessPaymentDto, BigDecimal> byCategoryMap = new HashMap<>();
+            for(UselessPaymentDto dto: byCategory) {
+                BigDecimal value = byCategoryMap.get(dto);
+                if(value == null) {
+                    value = dto.getValue();
+                } else {
+                    value = value.add(dto.getValue());
+                }
+                byCategoryMap.put(dto, value);
+            }
+
+            List<UselessPaymentDto> bySubcategory= payments.stream()
+                    .filter(it -> it.getSubcategory() != null && it.getSubcategory().getUselessType())
+                    .map(it -> new UselessPaymentDto(
+                            it.getCategory().getName(),
+                            it.getSubcategory().getName(),
+                            it.getValue()
+                    ))
+                    .collect(Collectors.toList());
+            Map<UselessPaymentDto, BigDecimal> bySubcategoryMap = new HashMap<>();
+            for(UselessPaymentDto dto : bySubcategory) {
+                BigDecimal value = bySubcategoryMap.get(dto);
+                if(value == null) {
+                    value = dto.getValue();
+                } else {
+                    value = value.add(dto.getValue());
+                }
+                bySubcategoryMap.put(dto, value);
+            }
+            List<UselessPaymentDto> result = bySubcategoryMap.entrySet().stream().map(
+                    entry -> {
+                        UselessPaymentDto dto = entry.getKey();
+                        dto.setValue(entry.getValue());
+                        return dto;
+                    }
+            ).collect(Collectors.toList());
+            result.addAll(
+                    byCategoryMap.entrySet().stream().map(entry -> {
+                        UselessPaymentDto dto = entry.getKey();
+                        dto.setValue(entry.getValue());
+                        return dto;
+                    })
+
+                            .collect(Collectors.toList())
+            );
+            result.sort(Comparator.comparing(UselessPaymentDto::getCategory));
+            return result;
+        }
+        else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public Boolean deletePayment(PaymentDto paymentDto) {
         Optional<Payment> forDelete = paymentRepository
                 .findById(paymentDto.getId());
@@ -222,6 +289,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    @Transactional
     private void updateBalance(Integer userId, BigDecimal updateValue) {
         Date timeStart = Date.valueOf(LocalDate.now().withDayOfMonth(1));
         Date timeEnd = Date.valueOf(LocalDate.now());
@@ -232,6 +300,7 @@ public class PaymentServiceImpl implements PaymentService {
         balanceRepository.save(balance);
     }
 
+    @Transactional
     private void updatePlanProgress(Integer userId) {
         Date timeStart = Date.valueOf(LocalDate.now().withDayOfMonth(1));
         Date timeEnd = Date.valueOf(LocalDate.now());
@@ -265,7 +334,7 @@ public class PaymentServiceImpl implements PaymentService {
                     if (it.getIncomeLabel()) {
                         dto.setIncome(dto.getIncome().add(it.getValue()));
                     } else {
-                        dto.setExpense(dto.getIncome().add(it.getValue()));
+                        dto.setExpense(dto.getExpense().add(it.getValue()));
                     }
                     dateSum.put(it.getDate(), dto);
                 }
